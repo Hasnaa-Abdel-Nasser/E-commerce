@@ -74,3 +74,12 @@ export const addProductToWishlist = catchError(async(req, res, next)=>{
     message: "Product added to wishlist successfully"
   });
 });
+
+export const removeProductFromWishlist = catchError(async(req,res,next)=>{
+  const {productId, userId} = req.body;
+  const user = await userModel.findOneAndUpdate({_id: userId} , {$pull: {wishList: productId}});
+  if(!user) return next(new AppError("Not Found User", 400));
+  res.status(200).json({
+    message: "Product removed from wishlist successfully"
+  });
+})

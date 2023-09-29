@@ -80,6 +80,7 @@ export const changePassword = catchError(async(req,res,next)=>{
     const salt = await bcrypt.genSalt(+process.env.SALTROUNDS);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
     user.password = hashedPassword;
+    user.passwordChangedAt = Date.now();
     await user.save();
     res.status(200).json({message:"success"});    
 })

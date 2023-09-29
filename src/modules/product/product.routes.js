@@ -16,5 +16,5 @@ productRouter
 
 productRouter.patch('/wishlist',endPoints.addProductToWishlist)
 productRouter.get("/:id", endPoints.getProductById);
-
+productRouter.patch('/wishlist/remove' , endPoints.removeProductFromWishlist);
 export default productRouter;

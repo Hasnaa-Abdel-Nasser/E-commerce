@@ -10,6 +10,7 @@ const userSchema = mongoose.Schema({
         unique:true
     },
     password: String,
+    passwordChangedAt: Date,
     profileImage: String,
     wishList:[{
         type: mongoose.Types.ObjectId,
