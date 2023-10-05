@@ -5,6 +5,7 @@ import {ApiFeatures} from '../../utils/api.features.js';
 import slugify from "slugify";
 import {uploadToCloudinary} from '../../utils/files.uploads.js';
 import userModel from "../../../database/models/user.model.js";
+
 export const newProduct = catchError(async (req, res, next) => {
     const { name } = req.body;
     if (!req.files || !req.files.imageCover || !req.files.images) {

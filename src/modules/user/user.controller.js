@@ -4,17 +4,23 @@ import { AppError } from "../../utils/response.error.js";
 import bcrypt from "bcrypt";
 import sendEmail from "../../utils/email.validation.js";
 import Jwt from "jsonwebtoken";
-import * as manage from './user.manage.js';
+import * as manage from "./user.manage.js";
 import cloudinary from "../../utils/cloudinary.js";
 
 export const signUp = catchError(async (req, res, next) => {
-  const { name, email, password , role} = req.body;
+  const { name, email, password, role } = req.body;
   const user = await userModel.findOne({ email });
   if (user) return next(new AppError("Email already exists", 409));
   const salt = await bcrypt.genSalt(+process.env.SALTROUNDS); //salt value to be dynamically generated for each user.(More Security)
   const hashedPassword = await bcrypt.hash(password, salt);
   let code = manage.createCode();
-  const newUser = new userModel({name,email,password: hashedPassword,code , role});
+  const newUser = new userModel({
+    name,
+    email,
+    password: hashedPassword,
+    code,
+    role,
+  });
   const saveUser = await newUser.save();
   await sendEmail({ email, name, code });
   saveUser
@@ -30,7 +36,7 @@ export const signIn = catchError(async (req, res, next) => {
     if (match) {
       user.code = manage.createCode();
       await user.save();
-      await sendEmail({ email, name: user.name, code:user.code });
+      await sendEmail({ email, name: user.name, code: user.code });
       return res.status(200).json({ message: "success" });
     }
   }
@@ -40,9 +46,10 @@ export const signIn = catchError(async (req, res, next) => {
 export const verifyCode = catchError(async (req, res, next) => {
   const { email, code } = req.body;
   const user = await userModel.findOne({ email, code });
-  if (!user || user.code !== code) return next(new AppError("Invalid Code", 400));
+  if (!user || user.code !== code)
+    return next(new AppError("Invalid Code", 400));
   const isCodeValid = manage.validateVerificationCode(user.updatedAt);
-  if (!isCodeValid){
+  if (!isCodeValid) {
     user.code = manage.createCode();
     await user.save();
     return next(new AppError("Invalid Code", 400));
@@ -50,60 +57,71 @@ export const verifyCode = catchError(async (req, res, next) => {
   user.verified = true;
   const verify = await user.save();
   if (!verify) return next(new AppError("Some Problem", 400));
-  let token = Jwt.sign({ email: email, id: user._id , role: user.role}, process.env.JWT_SECRET,{ expiresIn: '90d' });
-  res.status(200).json({ message: "success" , token});
+  let token = Jwt.sign(
+    { email: email, id: user._id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "90d" }
+  );
+  res.status(200).json({ message: "success", token });
 });
 
-export const resendEmailVerification = catchError(async(req,res,next)=>{
-    const {email} = req.body;
-    const user = await userModel.findOne({ email });
-    if (!user) return next(new AppError("Email not found", 400));
-    user.code = manage.createCode();
-    await user.save();
-    await sendEmail({ email, name: user.name, code:user.code });
-    res.status(200).json({message:"success"});
-})
-
-export const forgotPassword = catchError(async(req,res,next)=>{
-    const {email} = req.body;
-    const user = await userModel.findOne({ email });
-    if(!user) return next(new AppError("Not Found Email", 400));
-    user.code = manage.createCode();
-    await user.save();
-    await sendEmail({ email, name: user.name, code:user.code });
-    res.status(200).json({message:"success"});
+export const resendEmailVerification = catchError(async (req, res, next) => {
+  const { email } = req.body;
+  const user = await userModel.findOne({ email });
+  if (!user) return next(new AppError("Email not found", 400));
+  user.code = manage.createCode();
+  await user.save();
+  await sendEmail({ email, name: user.name, code: user.code });
+  res.status(200).json({ message: "success" });
 });
 
-export const changePassword = catchError(async(req,res,next)=>{
-    const user = await userModel.findById(req.id);
-    if(!user) return next(new AppError("Unable to change password",400));
-    const salt = await bcrypt.genSalt(+process.env.SALTROUNDS);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    user.password = hashedPassword;
-    user.passwordChangedAt = Date.now();
-    await user.save();
-    res.status(200).json({message:"success"});    
-})
+export const forgotPassword = catchError(async (req, res, next) => {
+  const { email } = req.body;
+  const user = await userModel.findOne({ email });
+  if (!user) return next(new AppError("Not Found Email", 400));
+  user.code = manage.createCode();
+  await user.save();
+  await sendEmail({ email, name: user.name, code: user.code });
+  res.status(200).json({ message: "success" });
+});
 
-export const uploadProfileImg = catchError(async(req , res, next)=>{
-    if (!req.file) return next(new AppError("Please upload an image", 400));
-    const user = await userModel.findById(req.id);
-    if(!user) return next(new AppError("Not Found user", 400));
-    const result = await cloudinary.uploader.upload(req.file.path,{ folder: "user" });
-    user.profileImage = result.url;
-    await user.save();
-    res.status(200).json({message:"success"});
-})
+export const changePassword = catchError(async (req, res, next) => {
+  const id = req.user.id; // Get user id from token
+  const user = await userModel.findById(id);
+  if (!user) return next(new AppError("Unable to change password", 400));
+  const salt = await bcrypt.genSalt(+process.env.SALTROUNDS);
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
+  user.password = hashedPassword;
+  user.passwordChangedAt = Date.now();
+  await user.save();
+  res.status(200).json({ message: "success" });
+});
 
-export const getProfile = catchError(async(req , res, next)=>{
-    const user = await userModel.findById(req.id).select('name email profileImage lists');;
-    if(!user) return next(new AppError("Not Found user", 404));
-    res.status(200).json({message:"success" , user});
-})
+export const uploadProfileImg = catchError(async (req, res, next) => {
+  if (!req.file) return next(new AppError("Please upload an image", 400));
+  const id = req.user.id; // Get user id from token
+  const user = await userModel.findById(id);
+  if (!user) return next(new AppError("Not Found user", 400));
+  const result = await cloudinary.uploader.upload(req.file.path, {
+    folder: "user",
+  });
+  user.profileImage = result.url;
+  await user.save();
+  res.status(200).json({ message: "success" });
+});
 
-export const logout = catchError(async(req , res , next)=>{
-    const user = await userModel.findByIdAndUpdate({_id:req.id} , {verified:false});
-    if(!user) return next(new AppError('Not Found user' , 400));
-    res.status(200).json({message:"success"});
-})
+export const getProfile = catchError(async (req, res, next) => {
+  const id = req.user.id; // Get user id from token
+  const user = await userModel
+    .findById(id)
+    .select("name email profileImage lists");
+  if (!user) return next(new AppError("Not Found user", 404));
+  res.status(200).json({ message: "success", user });
+});
 
+export const logout = catchError(async (req, res, next) => {
+  const id = req.user.id; // Get user id from token
+  const user = await userModel.findByIdAndUpdate({ _id: id },{ verified: false });
+  if (!user) return next(new AppError("Not Found user", 400));
+  res.status(200).json({ message: "success" });
+});
