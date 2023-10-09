@@ -9,6 +9,7 @@ import subcategoryRouter from './src/modules/subcategory/subcategory.routes.js';
 import brandRouter from './src/modules/brand/brand.routes.js';
 import couponRouter from './src/modules/coupon/coupon.routes.js';
 import cartRouter from './src/modules/cart/cart.routes.js';
+import orderRouter from './src/modules/order/order.routes.js';
 
 import { AppError } from './src/utils/response.error.js';
 const app = express();
@@ -23,6 +24,7 @@ app.use('/api/v1/subcategory' , subcategoryRouter);
 app.use('/api/v1/brand' , brandRouter);
 app.use('/api/v1/coupon' , couponRouter);
 app.use('/api/v1/cart' , cartRouter);
+app.use('/api/v1/order' , orderRouter);
 
 app.all('*',(req , res , next)=>{
     next(new AppError('Not Found' , 404));

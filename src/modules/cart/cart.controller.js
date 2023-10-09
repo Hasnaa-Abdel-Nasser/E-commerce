@@ -76,11 +76,14 @@ export const applyCoupon = catchError(async(req , res , next)=>{
         await coupon.save();
         return next(new AppError(`Coupon is ${state}` , 400));
     }
-    coupon.users.push(req.user._id);
-    await coupon.save();
     let cart = await cartModel.findOne({userId:req.user._id});
     if(!cart) return next(new AppError('Not Found cart' , 400));
-    cart.totalPriceAfterDiscount = cart.totalPrice - (cart.totalPrice * coupon.amount)/100;
+    if(cart.couponId) return next(new AppError('You are already used coupon' , 400));
+    coupon.users.push(req.user._id);
+    await coupon.save();
+    let price = cart.totalPriceAfterDiscount || cart.totalPrice;
+    cart.totalPriceAfterCoupon = price - (price * coupon.amount)/100;
+    cart.couponId = coupon._id;
     await cart.save();
     res.status(200).json({message:"success" , cart});
 })
@@ -104,10 +107,15 @@ export const couponValidation = (coupon, userId) => {
   
 const calcTotalPrice = (cart)=>{
     let totalPrice = 0;
+    let totalPriceAfterDiscount = 0;
     for(const value of cart.cartItems){
-        console.log(cart)
-        let price = value.price - ((value.price * value.discount)/100).toFixed(2);
-        totalPrice += (price * value.quantity).toFixed(2) ;
+        if(value.discount > 0){
+            let price = value.price - ((value.price * value.discount)/100).toFixed(2);
+            totalPriceAfterDiscount += (price * value.quantity).toFixed(2);
+        }
+        totalPrice += (value.price * value.quantity).toFixed(2) ;
     }
     cart.totalPrice = totalPrice;
+    if(totalPriceAfterDiscount)
+      cart.totalPriceAfterDiscount = totalPriceAfterDiscount;
 }

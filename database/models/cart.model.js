@@ -22,7 +22,12 @@ const cartSchema = mongoose.Schema(
       }
     ],
     totalPrice: Number,
-    totalPriceAfterDiscount: Number
+    totalPriceAfterDiscount: Number,
+    totalPriceAfterCoupon:Number,
+    couponId:{
+      type: mongoose.Types.ObjectId,
+      ref: "coupon",
+    }
   },
   { timestamps: true }
 );

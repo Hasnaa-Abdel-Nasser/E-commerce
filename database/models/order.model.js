@@ -15,14 +15,11 @@ const orderSchema = mongoose.Schema(
         },
         quantity: {
           type: Number,
-          default: 1,
           required: true,
         },
-        price: {
-          type: Number,
-          required: true,
-        }
-      },
+        price: Number,
+        discount: Number
+      }
     ],
     address:{
         type: String,
@@ -31,20 +28,6 @@ const orderSchema = mongoose.Schema(
     phoneNumber : {
         type: [String],
         required: [true, "Phone Number required"],
-    },
-    subTotal:{
-        type:Number,
-        required: true,
-        default: 0
-    },
-    couponId: {
-        type: mongoose.Types.ObjectId,
-        ref: "coupon",
-    },
-    totalPrice:{
-        type:Number,
-        required: true,
-        default: 0
     },
     paymentMethod:{
         type: String,
@@ -55,6 +38,12 @@ const orderSchema = mongoose.Schema(
         type: String,
         enum:['pending' , 'confirmed' , 'placed' , 'on way' , 'deliverd' , 'cancelled']
     },
+    totalOrderPrice: Number,
+    totalPrice: Number,
+    couponId:{
+      type: mongoose.Types.ObjectId,
+      ref: "coupon",
+    }
   },
   { timestamps: true }
 );
