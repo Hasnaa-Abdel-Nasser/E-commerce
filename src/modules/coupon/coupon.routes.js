@@ -18,15 +18,17 @@ couponRouter
     userAuthorization("admin", "seller"),
     endPoints.editCoupon
   )
-  .delete(
-    userAuthentication,
-    userAuthorization("admin", "seller"),
-    endPoints.deleteCoupon
-  )
   .get(
     userAuthentication,
     userAuthorization("admin" , "seller"),
     endPoints.getCoupons
   )
+
+couponRouter.delete(
+  '/:id',
+  userAuthentication,
+  userAuthorization("admin", "seller"),
+  endPoints.deleteCoupon
+)
 
 export default couponRouter;

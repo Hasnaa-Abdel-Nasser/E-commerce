@@ -19,7 +19,7 @@ const couponSchema = mongoose.Schema({
         required: true,
         default: 0
     },
-    fromData: {
+    fromDate: {
         type: Date,
         required: true,
     },

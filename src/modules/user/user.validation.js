@@ -4,7 +4,8 @@ export const signUp = Joi.object({
   name: Joi.string().min(3).max(50).required(),
   email: Joi.string().required().email(),
   password: Joi.string().min(8).max(20).required().pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])')),
-  rePassword: Joi.ref('password')
+  rePassword: Joi.ref('password'),
+  role: Joi.string().required()
 });
 
 export const signIn = Joi.object({

@@ -12,19 +12,23 @@ cartRouter
     userAuthentication,
     userAuthorization("user"), 
     endPoints.addToCart)
-  .put(
-    userAuthentication, 
-    userAuthorization("user"), 
-    endPoints.removeFromCart)
   .patch(
     userAuthentication,
     userAuthorization("user"),
     endPoints.updateQuantity
-  )
-  .patch(
-    userAuthentication,
-    userAuthorization("user"),
-    endPoints.applyCoupon
   );
+
+cartRouter.put(
+  '/:id',
+  userAuthentication,
+  userAuthorization("user"), 
+  endPoints.removeFromCart);
+
+cartRouter.patch(
+  '/coupon',
+  userAuthentication,
+  userAuthorization("user"),
+  endPoints.applyCoupon
+);
 
 export default cartRouter;

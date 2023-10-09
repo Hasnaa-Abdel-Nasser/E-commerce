@@ -13,9 +13,8 @@ export const newProduct = catchError(async (req, res, next) => {
     }
     const findProduct = await productModel.findOne({ name });
     if (findProduct) {
-      return next(new AppError('This Exist Product Name', 400));
+      return next(new AppError('This Exist Product name', 400));
     }
-    console.log(req.body)
     req.body.slug = slugify(name);
     const { secure_url, public_id } = await uploadToCloudinary(req.files.imageCover[0].path, 'products');
     req.body.imageCover = { secure_url, public_id };

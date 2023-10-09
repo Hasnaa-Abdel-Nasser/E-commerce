@@ -17,7 +17,10 @@ const productSchema = mongoose.Schema({
         required: [true , 'product price required'],
         min : 1,
     },
-    discount: Number , 
+    discount:{
+        type:Number ,
+        default: 0
+    } , 
     discription: {
         type: String ,
         required: [true , 'product title required'],

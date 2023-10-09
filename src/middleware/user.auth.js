@@ -28,7 +28,7 @@ export const userAuthentication = catchError(async (req, res, next) => {
 });
 
 export const userAuthorization = (...roles)=>{
-  return catchError(async (req , next)=>{
+  return catchError(async (req ,res, next)=>{
     if(!roles.includes(req.user.role))  // To check Authorization
       return next(new AppError("Can't Access to This Point", 401));
     next();
