@@ -17,6 +17,7 @@ const orderSchema = mongoose.Schema(
           type: Number,
           required: true,
         },
+        name:String,
         price: Number,
         discount: Number
       }
@@ -26,7 +27,7 @@ const orderSchema = mongoose.Schema(
         required: [true, "Address required"],
     },
     phoneNumber : {
-        type: [String],
+        type: String,
         required: [true, "Phone Number required"],
     },
     paymentMethod:{
@@ -36,7 +37,7 @@ const orderSchema = mongoose.Schema(
     },
     orderStatus: {
         type: String,
-        enum:['pending' , 'confirmed' , 'placed' , 'on way' , 'deliverd' , 'cancelled']
+        enum:['pending' , 'confirmed' , 'placed' , 'on way' , 'delivered' , 'cancelled']
     },
     totalOrderPrice: Number,
     totalPrice: Number,

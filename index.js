@@ -10,8 +10,9 @@ import brandRouter from './src/modules/brand/brand.routes.js';
 import couponRouter from './src/modules/coupon/coupon.routes.js';
 import cartRouter from './src/modules/cart/cart.routes.js';
 import orderRouter from './src/modules/order/order.routes.js';
-
+import reviewRouter from './src/modules/review/review.routes.js';
 import { AppError } from './src/utils/response.error.js';
+import {createInvoice} from './src/utils/invoice.js';
 const app = express();
 const port = 3000;
 app.use(express.json());
@@ -25,10 +26,12 @@ app.use('/api/v1/brand' , brandRouter);
 app.use('/api/v1/coupon' , couponRouter);
 app.use('/api/v1/cart' , cartRouter);
 app.use('/api/v1/order' , orderRouter);
+app.use('/api/v1/review' , reviewRouter);
 
 app.all('*',(req , res , next)=>{
     next(new AppError('Not Found' , 404));
 });
+
 //Global error
 app.use((err , req , res , next)=>{
     res.status(err.statusCode).json({message: err.message});

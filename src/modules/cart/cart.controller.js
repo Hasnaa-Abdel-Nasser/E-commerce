@@ -12,6 +12,7 @@ export const addToCart = catchError(async(req , res , next)=>{
     if(quantity == 0) return next(new AppError('Not Valid' , 400));
     req.body.price = product.price;
     req.body.discount = product.discount;
+    req.body.name = product.name;
     const cart = await cartModel.findOne({userId:req.user._id});
     if(!cart){
         let saveCart = new cartModel({
@@ -109,11 +110,9 @@ const calcTotalPrice = (cart)=>{
     let totalPrice = 0;
     let totalPriceAfterDiscount = 0;
     for(const value of cart.cartItems){
-        if(value.discount > 0){
-            let price = value.price - ((value.price * value.discount)/100).toFixed(2);
-            totalPriceAfterDiscount += (price * value.quantity).toFixed(2);
-        }
-        totalPrice += (value.price * value.quantity).toFixed(2) ;
+        let price = value.price - ((value.price * value.discount)/100).toFixed(2);
+        totalPriceAfterDiscount += +(price * value.quantity).toFixed(2);
+        totalPrice += +(value.price * value.quantity).toFixed(2) ;
     }
     cart.totalPrice = totalPrice;
     if(totalPriceAfterDiscount)

@@ -18,5 +18,22 @@ orderRouter.delete(
   userAuthorization("user"),
   endPoints.cancelOrder
 );
-
+orderRouter.get(
+  "/listAll",
+  userAuthentication,
+  userAuthorization("user"),
+  endPoints.getUserOrders
+);
+orderRouter.get(
+  "/data",
+  userAuthentication,
+  userAuthorization("admin"),
+  endPoints.getAllOrders
+);
+orderRouter.patch(
+  "/delivered",
+  userAuthentication,
+  userAuthorization("seller" , "seller"),
+  endPoints.orderDelivered
+);
 export default orderRouter;

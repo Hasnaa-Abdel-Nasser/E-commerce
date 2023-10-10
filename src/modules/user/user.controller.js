@@ -22,7 +22,7 @@ export const signUp = catchError(async (req, res, next) => {
     role,
   });
   const saveUser = await newUser.save();
-  await sendEmail({ email, name, code });
+  await sendEmail({ email, name, code , subject:'Confirm Email'});
   saveUser
     ? res.status(200).json({ message: "success" })
     : next(new AppError("some problem", 400));
@@ -36,7 +36,7 @@ export const signIn = catchError(async (req, res, next) => {
     if (match) {
       user.code = manage.createCode();
       await user.save();
-      await sendEmail({ email, name: user.name, code: user.code });
+      await sendEmail({ email, name: user.name, code: user.code ,subject:'Confirm Email'});
       return res.status(200).json({ message: "success" });
     }
   }
@@ -71,7 +71,7 @@ export const resendEmailVerification = catchError(async (req, res, next) => {
   if (!user) return next(new AppError("Email not found", 400));
   user.code = manage.createCode();
   await user.save();
-  await sendEmail({ email, name: user.name, code: user.code });
+  await sendEmail({ email, name: user.name, code: user.code ,subject:'Confirm Email'});
   res.status(200).json({ message: "success" });
 });
 
@@ -81,7 +81,7 @@ export const forgotPassword = catchError(async (req, res, next) => {
   if (!user) return next(new AppError("Not Found Email", 400));
   user.code = manage.createCode();
   await user.save();
-  await sendEmail({ email, name: user.name, code: user.code });
+  await sendEmail({ email, name: user.name, code: user.code , subject:'Confirm Email'});
   res.status(200).json({ message: "success" });
 });
 
