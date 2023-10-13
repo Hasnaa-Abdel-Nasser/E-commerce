@@ -1,7 +1,7 @@
 import { createWriteStream } from "fs";
 import PDFDocument from "pdfkit";
 
-export async function createInvoice(order, path , userName , coupon) {
+export async function createInvoice(order, path , userName , coupon=0) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
 
   generateHeader(doc);
@@ -76,6 +76,7 @@ function generateInvoiceTable(doc, order , coupon) {
     const position = invoiceTableTop + (index + 1) * 30;
     let price = product.price-(product.price * product.discount)/100;
     amount += +(price*product.quantity*100).toFixed(2);
+    console.log(amount)
     generateTableRow(
       doc,
       position,

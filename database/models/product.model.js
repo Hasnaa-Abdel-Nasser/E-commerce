@@ -32,6 +32,16 @@ const productSchema = mongoose.Schema({
         min: 0,
         default: 0
     },
+    ratingCount:{
+        type: Number ,
+        min:0,
+        default: 0
+    },
+    ratingNumber:{
+        type:Number,
+        min:0,
+        default: 0
+    },
     quantity: {
         type: Number ,
         required: [true , 'product quantity required'],

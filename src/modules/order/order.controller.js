@@ -41,9 +41,8 @@ export const createOrder = catchError(async (req, res, next) => {
     });
   }
   const coupon = await couponModel.findById(cart.couponId);
-  // await cartModel.findByIdAndDelete(cart._id);
-
- await createInvoice(saveOrder,'invoice.pdf' , req.user.name , coupon.amount);
+  await cartModel.findByIdAndDelete(cart._id);
+  await createInvoice(saveOrder,'invoice.pdf' , req.user.name , (coupon)?coupon.amount:0);
   sendEmail({
     email:req.user.email,
     subject: 'Cart Invoice',
