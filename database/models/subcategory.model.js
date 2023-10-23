@@ -4,6 +4,7 @@ const subcategorySchema = mongoose.Schema({
     name: {
         type: String ,
         minLength:3,
+        maxLength: 20,
         required: [true , 'subcategory name required'],
         trim: true
     },
@@ -13,6 +14,7 @@ const subcategorySchema = mongoose.Schema({
     },
     categoryId:{
         type: mongoose.Types.ObjectId,
+        required: [true , 'Category Id required'],
         ref: "category"
     }
 },{timestamps: true});

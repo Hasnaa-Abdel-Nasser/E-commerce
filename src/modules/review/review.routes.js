@@ -4,6 +4,8 @@ import {
   userAuthentication,
   userAuthorization,
 } from "../../middleware/user.auth.js";
+import {validation} from '../../middleware/validation.js';
+import {createReview , editReview} from './review.validation.js';
 const reviewRouter = new Router();
 
 reviewRouter
@@ -11,10 +13,12 @@ reviewRouter
   .post(
     userAuthentication, 
     userAuthorization("user"), 
+    validation(createReview),
     endPoints.createReview)
   .put(
     userAuthentication, 
     userAuthorization("user"), 
+    validation(editReview),
     endPoints.editReview)
   .delete(
     userAuthentication,

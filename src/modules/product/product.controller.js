@@ -65,7 +65,8 @@ export const getProductById = catchError(async(req, res, next) => {
 });
 
 export const addProductToWishlist = catchError(async(req, res, next)=>{
-  const {productId , userId} = req.body;
+  const {productId} = req.body;
+  const userId = req.user._id;
   const product = await productModel.findById({_id: productId});
   const user = await userModel.findById({_id:userId});
   if(!product || !user) return next(new AppError("Not Found Product or User.", 400));
@@ -76,7 +77,8 @@ export const addProductToWishlist = catchError(async(req, res, next)=>{
 });
 
 export const removeProductFromWishlist = catchError(async(req,res,next)=>{
-  const {productId, userId} = req.body;
+  const {productId} = req.body;
+  const userId = req.user._id;
   const user = await userModel.findOneAndUpdate({_id: userId} , {$pull: {wishList: productId}});
   if(!user) return next(new AppError("Not Found User", 400));
   res.status(200).json({

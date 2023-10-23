@@ -26,8 +26,8 @@ export const createReview = catchError(async(req,res,next)=>{
 });
 
 export const editReview = catchError(async(req,res,next)=>{
-    const {_id} = req.query;
-    const review = await reviewModel.findByIdAndUpdate({_id});
+    const {_id} = req.body;
+    const review = await reviewModel.findByIdAndUpdate(_id,req.body);
     if(!review) return next(new AppError('You Can\'t Edit Review Now , Please Try Again.'));
     if(req.body.rating){
         const product = await productModel.findById(review.productId);

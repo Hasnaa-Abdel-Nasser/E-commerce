@@ -23,10 +23,11 @@ const productSchema = mongoose.Schema({
     } , 
     discription: {
         type: String ,
-        required: [true , 'product title required'],
+        required: [true , 'product discription required'],
         minLength: [5 , 'too short product discription'],
         trim: true,
     },
+    ProductDetails: Object,
     ratingAvg:{
         type: Number ,
         min: 0,

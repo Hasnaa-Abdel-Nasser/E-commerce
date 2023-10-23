@@ -4,6 +4,8 @@ import {
   userAuthentication,
   userAuthorization,
 } from "../../middleware/user.auth.js";
+import {validation} from '../../middleware/validation.js';
+import {createCoupon , editCoupon} from './coupon.validation.js';
 const couponRouter = new Router();
 
 couponRouter
@@ -11,11 +13,13 @@ couponRouter
   .post(
     userAuthentication,
     userAuthorization("admin", "seller"),
+    validation(createCoupon),
     endPoints.createCoupon
   )
   .put(
     userAuthentication,
     userAuthorization("admin", "seller"),
+    validation(editCoupon),
     endPoints.editCoupon
   )
   .get(

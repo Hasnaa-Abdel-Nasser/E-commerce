@@ -4,6 +4,8 @@ import {
   userAuthentication,
   userAuthorization,
 } from "../../middleware/user.auth.js";
+import {validation} from '../../middleware/validation.js';
+import {cart , applyCoupon} from './cart.validation.js';
 const cartRouter = new Router();
 
 cartRouter
@@ -11,10 +13,12 @@ cartRouter
   .put(
     userAuthentication,
     userAuthorization("user"), 
+    validation(cart),
     endPoints.addToCart)
   .patch(
     userAuthentication,
     userAuthorization("user"),
+    validation(cart),
     endPoints.updateQuantity
   );
 
@@ -28,6 +32,7 @@ cartRouter.patch(
   '/coupon',
   userAuthentication,
   userAuthorization("user"),
+  validation(applyCoupon),
   endPoints.applyCoupon
 );
 

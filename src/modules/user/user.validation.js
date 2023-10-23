@@ -15,7 +15,7 @@ export const signIn = Joi.object({
 
 export const verify = Joi.object({
   email: Joi.string().required().email(),
-  code:Joi.string().required()
+  code:Joi.string().min(5).max(5).required()
 });
 
 export const newPassword = Joi.object({
