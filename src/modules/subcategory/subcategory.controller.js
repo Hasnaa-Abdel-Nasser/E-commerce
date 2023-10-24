@@ -14,7 +14,8 @@ export const addSubcategory = catchError(async(req,res,next)=>{
 });
 
 export const listAllSubcategories = catchError(async(req,res,next)=>{
-    const subcategories = await subcategoryModel.find();
+    const apiFeatures = new ApiFeatures( subcategoryModel.find() , req.query).filter().fields().sort();
+    const subcategories = await apiFeatures.mongooseQuery;
     res.status(200).json({message:'success' , subcategories});
 });
 

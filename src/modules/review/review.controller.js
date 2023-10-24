@@ -51,8 +51,14 @@ export const deleteReview = catchError(async(req,res,next)=>{
 });
 
 export const getAllProductReviews = catchError(async(req,res,next)=>{
-    const {productId} = req.params;
-    const reviews = await reviewModel.find({productId});
+    const {productId} = req.query;
+    const apiFeatures = new ApiFeatures( reviewModel.find({productId}) , req.query).paginate().filter().fields().sort();
+    const reviews = await apiFeatures.mongooseQuery.populate('createdBy' , 'name profileImage');
     res.status(200).json({message:'success' , reviews});
 });
 
+export const getUserReviews = catchError(async(req,res,next)=>{
+    const id = req.user._id;
+    const reviews = await reviewModel.find({createdBy:id});
+    res.status(200).json({message:'success' , reviews});
+});

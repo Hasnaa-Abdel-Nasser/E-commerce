@@ -26,8 +26,12 @@ reviewRouter
     endPoints.deleteReview
   )
   .get(
-    userAuthentication,
-    userAuthorization("user", "admin"),
     endPoints.getAllProductReviews
   );
+  reviewRouter.get(
+    '/user',
+    userAuthentication,
+    userAuthorization("user"),
+    endPoints.getUserReviews
+  )
 export default reviewRouter;

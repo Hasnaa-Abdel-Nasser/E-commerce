@@ -6,12 +6,12 @@ export class ApiFeatures{
         this.queryString = queryString;
     }
 
-    paginate(total){
+    paginate(){
         let page = this.queryString.page;
         this.page = page * 1 || 1;
-        if(page <= 0 || !page || page > total)  page = 1;
-        let skip = (page - 1) * 12;
-        this.mongooseQuery.skip(skip).limit(12);
+        if(page <= 0 || !page)  page = 1;
+        let skip = (page - 1) * 10;
+        this.mongooseQuery.skip(skip).limit(10);
         this.page = +page;
         return this;
     }

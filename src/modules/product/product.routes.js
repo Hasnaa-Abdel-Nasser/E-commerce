@@ -49,6 +49,12 @@ productRouter.patch(
   validation(wishList),
   endPoints.removeProductFromWishlist
 );
+productRouter.get(
+  "/wishlist",
+  userAuthentication,
+  userAuthorization("user"),
+  endPoints.getWishlist
+);
 productRouter.get(  // Get One Product
   "/:id",
   endPoints.getProductById

@@ -41,8 +41,8 @@ export const editProduct = catchError(async(req, res, next) => {
 });
 
 export const listAllProducts = catchError(async(req, res, next) => {
-  // pages , filter , find , search
-  const products = await productModel.find();
+  const apiFeatures = new ApiFeatures( productModel.find({ quantity: { $gt: 0 } }) , req.query).paginate().filter().fields().sort();
+  const products = await apiFeatures.mongooseQuery.populate('categoryId subcategoryId brandId' , 'name logo -_id');
   res.status(200).json(products);
 });
 
@@ -84,4 +84,10 @@ export const removeProductFromWishlist = catchError(async(req,res,next)=>{
   res.status(200).json({
     message: "Product removed from wishlist successfully"
   });
+})
+
+export const getWishlist = catchError(async(req,res,next)=>{
+  const id = req.user._id;
+  const user = await userModel.findById(id).select('wishList -_id').populate('wishList','name discription price discount rating imageCover.secure_url');
+  res.status(200).json(user)
 })

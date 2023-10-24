@@ -70,7 +70,8 @@ export const getCoupons = catchError(async (req, res, next) => {
       createdBy: req.user._id,
     });
   } else {
-    coupons = await couponModel.find({ couponStatus: "valid" });
+    const apiFeatures = new ApiFeatures( couponModel.find() , req.query).paginate().filter().fields().sort();
+    coupons = await apiFeatures.mongooseQuery;
   }
   res.status(200).json({ message: "success", coupons });
 });

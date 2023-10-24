@@ -8,6 +8,8 @@ import payment from "../../utils/payment.js";
 import Stripe from "stripe";
 import { createInvoice } from "../../utils/invoice.js";
 import sendEmail from "../../utils/email.validation.js";
+import { ApiFeatures } from "../../utils/api.features.js";
+
 // import * as dotenv from 'dotenv';
 // dotenv.config();
 export const createOrder = catchError(async (req, res, next) => {
@@ -112,12 +114,14 @@ export const cancelOrder = catchError(async (req, res, next) => {
 });
 
 export const getUserOrders = catchError(async (req, res, next) => {
-  const orders = await orderModel.find({ userId: req.user._id });
+  const apiFeatures = new ApiFeatures( orderModel.find({ userId: req.user._id }) , req.query).paginate().filter().fields().sort();
+  const orders = await apiFeatures.mongooseQuery.populate('cartItems.productId couponId' , 'imageCover.secure_url amount -_id');;
   res.status(200).json({ message: "success", orders });
 });
 
 export const getAllOrders = catchError(async (req, res, next) => {
-  const orders = await orderModel.find();
+  const apiFeatures = new ApiFeatures( orderModel.find() , req.query).paginate().filter().fields().sort();
+  const orders = await apiFeatures.mongooseQuery.populate('cartItems.productId couponId' , 'imageCover.secure_url amount -_id');
   res.status(200).json({ message: "success", orders });
 });
 

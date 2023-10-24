@@ -46,8 +46,8 @@ const productSchema = mongoose.Schema({
     quantity: {
         type: Number ,
         required: [true , 'product quantity required'],
-        min: 0,
-        default: 0
+        min: 1,
+        default: 1
     },
     imageCover: Object,
     images: [Object],

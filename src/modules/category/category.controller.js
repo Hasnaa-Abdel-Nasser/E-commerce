@@ -14,7 +14,8 @@ export const addCategory = catchError(async(req,res,next)=>{
 });
 
 export const listAllCategories = catchError(async(req,res,next)=>{
-    const categories = await categoryModel.find();
+    const apiFeatures = new ApiFeatures( categoryModel.find() , req.query).filter().fields().sort();
+    const categories = await apiFeatures.mongooseQuery;
     res.status(200).json({message:'success' , categories});
 });
 

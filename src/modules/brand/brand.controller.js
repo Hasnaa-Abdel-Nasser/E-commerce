@@ -45,7 +45,8 @@ export const deleteBrand = catchError(async(req,res,next)=>{
 });
 
 export const listAllBrands = catchError(async(req,res,next)=>{
-    const brands = await brandModel.find();
+    const apiFeatures = new ApiFeatures( brandModel.find() , req.query).filter().fields().sort();
+    const brands = await apiFeatures.mongooseQuery;
     res.status(200).json({message:'success' , brands});
 });
 
