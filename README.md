@@ -20,7 +20,7 @@
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/Hasnaa-Abdel-Nasser/Athar-API
+   git clone https://github.com/Hasnaa-Abdel-Nasser/E-commerce
    ```
 2. Install NPM packages
    ```sh
